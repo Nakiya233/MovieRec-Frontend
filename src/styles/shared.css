@@ -1,0 +1,230 @@
+/* ===== 输入框 ===== */
+.input-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #09090B;
+  background: #FAFAFA;
+  border: 1px solid #E4E4E7;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+.input-field::placeholder {
+  color: #A1A1AA;
+}
+.input-field:focus {
+  border-color: #18181B;
+  box-shadow: 0 0 0 1px rgba(24, 24, 27, 0.08);
+  outline: none;
+}
+
+/* ===== 主按钮（深色填充） ===== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  background: #18181B;
+  color: #FFFFFF;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-primary:hover {
+  background: #3F3F46;
+}
+.btn-primary:active {
+  transform: scale(0.99);
+}
+
+/* ===== 次按钮（边框幽灵） ===== */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border: 1px solid #E4E4E7;
+  background: transparent;
+  color: #09090B;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-outline:hover {
+  border-color: #18181B;
+  background: #FAFAFA;
+}
+
+/* ===== 卡片容器 ===== */
+.card {
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 2px;
+  padding: 1.25rem;
+}
+
+/* ===== 统计卡片 ===== */
+.stat-card {
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 2px;
+  padding: 1.25rem;
+  transition: border-color 0.2s ease;
+}
+.stat-card:hover {
+  border-color: #18181B;
+}
+
+/* ===== 电影卡片 ===== */
+.movie-card {
+  border: 1px solid #E4E4E7;
+  border-radius: 2px;
+  transition: border-color 0.2s ease;
+  cursor: pointer;
+}
+.movie-card:hover {
+  border-color: #18181B;
+}
+
+/* ===== 状态标签 (Badge) ===== */
+.pill-success {
+  background: #F0FDF4;
+  color: #16A34A;
+  border: 1px solid #BBF7D0;
+  border-radius: 4px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+}
+.pill-warning {
+  background: #FFFBEB;
+  color: #CA8A04;
+  border: 1px solid #FDE68A;
+  border-radius: 4px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+}
+.pill-danger {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+  border-radius: 4px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+}
+
+/* ===== 类型标签 ===== */
+.genre-tag {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #E4E4E7;
+  border-radius: 4px;
+  background: #FAFAFA;
+  color: #52525B;
+}
+
+/* ===== 表格样式 ===== */
+.table-header {
+  background: #FAFAFA;
+}
+.table-header th {
+  text-align: left;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.75rem;
+  color: #A1A1AA;
+  font-weight: 500;
+}
+.table-cell {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #F4F4F5;
+}
+.table-row:hover {
+  background: #FAFAFA;
+}
+
+/* ===== 导航链接 ===== */
+.nav-link {
+  color: #52525B;
+  transition: color 0.15s ease;
+}
+.nav-link:hover {
+  color: #09090B;
+}
+.nav-link.active {
+  color: #09090B;
+  font-weight: 500;
+}
+
+/* ===== 分页按钮 ===== */
+.pagination-btn {
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #52525B;
+  border: 1px solid #E4E4E7;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: #FFFFFF;
+}
+.pagination-btn:hover {
+  border-color: #18181B;
+  color: #18181B;
+}
+.pagination-btn.active {
+  background: #18181B;
+  color: #FFFFFF;
+  border-color: #18181B;
+  font-weight: 500;
+}
+.pagination-btn:disabled {
+  color: #A1A1AA;
+  cursor: not-allowed;
+}
+.pagination-btn:disabled:hover {
+  border-color: #E4E4E7;
+  color: #A1A1AA;
+}
+
+/* ===== 评分星级容器 ===== */
+.star-rating {
+  display: inline-flex;
+  gap: 0.125rem;
+  cursor: pointer;
+}
+.star-rating.readonly {
+  cursor: default;
+}
+
+/* ===== 隐藏滚动条 ===== */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ===== 过渡工具类 ===== */
+.transition-color {
+  transition: color 0.15s ease;
+}
+.transition-border {
+  transition: border-color 0.2s ease;
+}
+.transition-bg {
+  transition: background-color 0.15s ease;
+}

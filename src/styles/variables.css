@@ -1,0 +1,31 @@
+:root {
+  /* Monochrome Minimal 色板 */
+  --color-accent: #18181B;
+  --color-accent-hover: #3F3F46;
+  --color-surface: #FAFAFA;
+  --color-border: #E4E4E7;
+  --color-text-primary: #09090B;
+  --color-text-secondary: #52525B;
+  --color-text-muted: #A1A1AA;
+  --color-hover-bg: #F4F4F5;
+
+  /* 语义色 */
+  --color-success-bg: #F0FDF4;
+  --color-success-text: #16A34A;
+  --color-success-border: #BBF7D0;
+  --color-error-bg: #FEF2F2;
+  --color-error-text: #DC2626;
+  --color-error-border: #FECACA;
+  --color-warning-bg: #FFFBEB;
+
+  /* 字体 */
+  --font-heading: 'Archivo', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+
+  /* 圆角 */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  /* 间距 */
+  --spacing-page: 1.5rem;
+}
