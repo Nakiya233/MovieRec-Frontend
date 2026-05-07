@@ -18,6 +18,7 @@ const loginLoading = ref(false)
 
 // Register fields
 const regUsername = ref('')
+const regEmail = ref('')
 const regPassword = ref('')
 const regConfirmPassword = ref('')
 const regError = ref('')
@@ -42,10 +43,18 @@ async function handleLogin() {
   }
 }
 
+function validateEmail(email: string): string | true {
+  if (!email) return '请输入邮箱地址'
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return '邮箱格式不正确'
+  return true
+}
+
 async function handleRegister() {
   regError.value = ''
   const uErr = validateUsername(regUsername.value)
   if (uErr !== true) { regError.value = uErr; return }
+  const eErr = validateEmail(regEmail.value)
+  if (eErr !== true) { regError.value = eErr; return }
   const pErr = validatePassword(regPassword.value)
   if (pErr !== true) { regError.value = pErr; return }
   if (regPassword.value !== regConfirmPassword.value) {
@@ -160,6 +169,15 @@ async function handleRegister() {
             />
           </div>
           <div>
+            <label class="block text-xs font-medium text-[#52525B] mb-2">邮箱地址</label>
+            <input
+              v-model="regEmail"
+              type="email"
+              placeholder="your@email.com"
+              class="input-field"
+            />
+          </div>
+          <div>
             <label class="block text-xs font-medium text-[#52525B] mb-2">密码</label>
             <input
               v-model="regPassword"
@@ -183,18 +201,6 @@ async function handleRegister() {
           </button>
         </form>
 
-        <!-- Divider -->
-        <div class="flex items-center gap-4 my-8">
-          <div class="flex-1 h-px bg-[#E4E4E7]"></div>
-          <span class="text-xs text-[#A1A1AA]">或</span>
-          <div class="flex-1 h-px bg-[#E4E4E7]"></div>
-        </div>
-
-        <!-- Social Login -->
-        <div class="flex gap-3">
-          <button class="btn-outline flex-1 text-sm">Google</button>
-          <button class="btn-outline flex-1 text-sm">GitHub</button>
-        </div>
       </div>
     </div>
   </div>
