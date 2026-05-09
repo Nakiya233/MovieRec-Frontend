@@ -9,6 +9,6 @@ export interface CommentReq {
 
 export const commentApi = {
   submit(data: CommentReq) {
-    return http.post<ApiResponse<CommentItem>>('/comments', data)
+    return http.post<ApiResponse<CommentItem>>('/user/comments', data)
   }
 }

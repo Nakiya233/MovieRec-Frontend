@@ -13,7 +13,7 @@ export const useRecommendStore = defineStore('recommend', () => {
   async function fetchRecommendations(pageNum: number, size: number) {
     const res = await recommendApi.getList({ page: pageNum, size })
     const data = res.data.data
-    results.value = data.records.map((r: any) => ({ ...r, movieId: r.id ?? r.movieId }))
+    results.value = data.records.map((r: any) => ({ ...r, movieId: r.id ?? r.movieId, recommendReason: r.reason ?? r.recommendReason }))
     source.value = data.source
     isColdStart.value = data.isColdStart
     total.value = data.total

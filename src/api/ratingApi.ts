@@ -15,6 +15,6 @@ export interface RatingRes {
 
 export const ratingApi = {
   submit(data: RatingReq) {
-    return http.post<ApiResponse<RatingRes>>('/ratings', data)
+    return http.post<ApiResponse<RatingRes>>('/user/ratings', data)
   }
 }
