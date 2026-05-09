@@ -33,7 +33,7 @@ export interface CommentItem {
 export interface MovieQueryParams {
   page: number
   size: number
-  genreId?: number
+  genreIds?: string
   keyword?: string
   sortBy?: 'hot' | 'rating' | 'time'
 }

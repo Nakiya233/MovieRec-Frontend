@@ -16,7 +16,7 @@ export const useMovieStore = defineStore('movie', () => {
   const hotMovies = ref<MovieCardData[]>([])
 
   function cacheKey(params: MovieQueryParams): string {
-    return `${params.page}_${params.genreId ?? ''}_${params.sortBy ?? ''}_${params.keyword ?? ''}`
+    return `${params.page}_${params.genreIds ?? ''}_${params.sortBy ?? ''}_${params.keyword ?? ''}`
   }
 
   async function fetchMovies(params: MovieQueryParams): Promise<MovieListRes> {
