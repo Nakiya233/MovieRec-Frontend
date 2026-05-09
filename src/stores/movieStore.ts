@@ -26,8 +26,10 @@ export const useMovieStore = defineStore('movie', () => {
       return cached.data
     }
     const res = await movieApi.getList(params)
-    listCache.value.set(key, { data: res.data.data, timestamp: Date.now() })
-    return res.data.data
+    const data = res.data.data
+    data.records = data.records.map((r: any) => ({ ...r, movieId: r.id ?? r.movieId }))
+    listCache.value.set(key, { data, timestamp: Date.now() })
+    return data
   }
 
   async function fetchMovieDetail(movieId: number): Promise<MovieDetail> {
@@ -42,7 +44,7 @@ export const useMovieStore = defineStore('movie', () => {
 
   async function fetchHotMovies(): Promise<MovieCardData[]> {
     const res = await movieApi.getList({ page: 1, size: 8, sortBy: 'hot' })
-    hotMovies.value = res.data.data.records
+    hotMovies.value = res.data.data.records.map((r: any) => ({ ...r, movieId: r.id ?? r.movieId }))
     return hotMovies.value
   }
 
