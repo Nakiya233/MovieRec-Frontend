@@ -10,7 +10,7 @@ defineProps<{
   ratingCount: number
   genres: string[]
   rankNo?: number
-  recommendReason?: string
+  recommendReason?: string | null
 }>()
 
 const emit = defineEmits<{

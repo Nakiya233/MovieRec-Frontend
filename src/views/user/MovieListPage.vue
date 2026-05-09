@@ -105,16 +105,6 @@ function goToMovie(id: number) {
       </div>
     </div>
 
-    <!-- Search -->
-    <div class="mb-8">
-      <input
-        v-model="keyword"
-        type="text"
-        placeholder="搜索电影名称..."
-        class="input-field max-w-sm"
-      />
-    </div>
-
     <!-- Movie Grid -->
     <div v-if="loading" class="text-center py-20 text-sm text-[#A1A1AA]">加载中...</div>
 

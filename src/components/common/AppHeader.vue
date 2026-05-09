@@ -1,13 +1,24 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter, useRoute } from 'vue-router'
+import { useToast } from '@/composables/useToast'
 
 const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
+const toast = useToast()
 
 function goTo(path: string) {
   router.push(path)
+}
+
+function goToRecommend() {
+  if (!auth.isLoggedIn) {
+    toast.show('请先登录后再查看推荐')
+    router.push('/login')
+    return
+  }
+  router.push('/recommendations')
 }
 </script>
 
@@ -24,7 +35,7 @@ function goTo(path: string) {
         <div class="hidden md:flex gap-7 text-sm">
           <router-link to="/" class="font-medium" :class="route.path === '/' ? 'text-[#09090B]' : 'text-[#A1A1AA] hover:text-[#52525B] transition-colors duration-150'">首页</router-link>
           <router-link to="/movies" class="font-medium" :class="route.path.startsWith('/movies') ? 'text-[#09090B]' : 'text-[#A1A1AA] hover:text-[#52525B] transition-colors duration-150'">发现</router-link>
-          <router-link to="/recommendations" class="font-medium" :class="route.path.startsWith('/recommendations') ? 'text-[#09090B]' : 'text-[#A1A1AA] hover:text-[#52525B] transition-colors duration-150'">推荐</router-link>
+          <span class="font-medium cursor-pointer" :class="route.path.startsWith('/recommendations') ? 'text-[#09090B]' : 'text-[#A1A1AA] hover:text-[#52525B] transition-colors duration-150'" @click="goToRecommend">推荐</span>
         </div>
       </div>
       <div class="flex items-center gap-4">

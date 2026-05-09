@@ -1,20 +1,32 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
 import { useMovieStore } from '@/stores/movieStore'
+import { useRecommendStore } from '@/stores/recommendStore'
+import { useToast } from '@/composables/useToast'
 import MovieCard from '@/components/common/MovieCard.vue'
 import type { MovieCardData } from '@/types/movie'
+import type { RecommendRecord } from '@/types/recommend'
 
 const router = useRouter()
+const auth = useAuthStore()
 const movieStore = useMovieStore()
+const recommendStore = useRecommendStore()
+const toast = useToast()
 
 const hotMovies = ref<MovieCardData[]>([])
+const recommendMovies = ref<RecommendRecord[]>([])
 const loading = ref(true)
 const searchKeyword = ref('')
 
 onMounted(async () => {
   try {
     hotMovies.value = await movieStore.fetchHotMovies()
+    if (auth.isLoggedIn) {
+      await recommendStore.fetchRecommendations(1, 6)
+      recommendMovies.value = recommendStore.results
+    }
   } finally {
     loading.value = false
   }
@@ -29,6 +41,15 @@ function goToSearch() {
   if (kw) {
     router.push({ name: 'MovieList', query: { keyword: kw } })
   }
+}
+
+function goToRecommend() {
+  if (!auth.isLoggedIn) {
+    toast.show('请先登录后再查看推荐')
+    router.push('/login')
+    return
+  }
+  router.push({ name: 'Recommend' })
 }
 
 </script>
@@ -53,7 +74,7 @@ function goToSearch() {
             <button class="btn-primary" @click="router.push({ name: 'MovieList' })">
               立即探索
             </button>
-            <button class="btn-outline" @click="router.push({ name: 'Recommend' })">
+            <button class="btn-outline" @click="goToRecommend">
               查看推荐
             </button>
           </div>
@@ -63,23 +84,32 @@ function goToSearch() {
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-6 py-16 space-y-20">
-      <!-- 为你推荐 -->
+      <!-- 个性化推荐 -->
       <section>
         <div class="flex items-end justify-between mb-8">
           <div>
-            <h2 class="font-heading text-2xl font-semibold tracking-tight mb-1">热门推荐</h2>
-            <p class="text-sm text-[#A1A1AA]">本周最受好评的影片</p>
+            <h2 class="font-heading text-2xl font-semibold tracking-tight mb-1">个性化推荐</h2>
+            <p class="text-sm text-[#A1A1AA]">基于你的偏好，为你精选推荐</p>
           </div>
-          <a href="#" class="text-sm font-medium text-[#52525B] hover:text-[#18181B] transition-colors duration-150 cursor-pointer" @click.prevent="router.push({ name: 'MovieList', query: { sortBy: 'hot' } })">
-            查看全部 &rarr;
-          </a>
+          <template v-if="auth.isLoggedIn">
+            <a href="#" class="text-sm font-medium text-[#52525B] hover:text-[#18181B] transition-colors duration-150 cursor-pointer" @click.prevent="router.push({ name: 'Recommend' })">
+              查看全部 &rarr;
+            </a>
+          </template>
         </div>
 
         <div v-if="loading" class="text-center py-20 text-sm text-[#A1A1AA]">加载中...</div>
 
+        <!-- 未登录 -->
+        <div v-else-if="!auth.isLoggedIn" class="text-center py-16 border border-dashed border-[#E4E4E7] rounded-md">
+          <p class="text-sm text-[#A1A1AA] mb-4">登录后获取个性化推荐内容</p>
+          <button class="btn-primary text-sm" @click="router.push('/login')">去登录</button>
+        </div>
+
+        <!-- 已登录：个性化推荐 -->
         <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
           <MovieCard
-            v-for="(movie, idx) in hotMovies.slice(0, 6)"
+            v-for="(movie, idx) in recommendMovies.slice(0, 6)"
             :key="movie.movieId"
             v-bind="movie"
             :rank-no="idx + 1"
@@ -99,25 +129,14 @@ function goToSearch() {
             查看全部 &rarr;
           </a>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0.5">
-          <div
-            v-for="(movie, idx) in hotMovies.slice(0, 4)"
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
+          <MovieCard
+            v-for="(movie, idx) in hotMovies.slice(0, 6)"
             :key="movie.movieId"
-            class="flex items-center gap-5 p-5 bg-white border border-[#E4E4E7] hover:border-[#18181B] transition-colors duration-200 cursor-pointer"
+            v-bind="movie"
+            :rank-no="idx + 1"
             @click="goToMovie(movie.movieId)"
-          >
-            <span class="font-heading text-4xl font-bold text-[#E4E4E7] w-10 text-right select-none">{{ String(idx + 1).padStart(2, '0') }}</span>
-            <div class="flex-1 min-w-0">
-              <h3 class="font-semibold text-sm truncate">{{ movie.title }}</h3>
-              <div class="flex items-center gap-2 mt-1.5">
-                <svg class="w-3.5 h-3.5 text-[#18181B] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                  <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
-                </svg>
-                <span class="text-sm font-semibold">{{ movie.avgRating.toFixed(1) }}</span>
-              </div>
-              <p class="text-xs text-[#A1A1AA] mt-1">{{ movie.genres.slice(0, 2).join(' / ') }}</p>
-            </div>
-          </div>
+          />
         </div>
       </section>
     </main>
