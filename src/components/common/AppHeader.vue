@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const auth = useAuthStore()
 const router = useRouter()
+const route = useRoute()
 
 function goTo(path: string) {
   router.push(path)
@@ -21,10 +22,9 @@ function goTo(path: string) {
           <span class="font-heading text-lg tracking-tight font-semibold text-[#09090B]">MovieRec</span>
         </div>
         <div class="hidden md:flex gap-7 text-sm">
-          <a href="/" class="font-medium text-[#09090B]">首页</a>
-          <a href="/movies" class="nav-link">发现</a>
-          <a href="/recommendations" class="nav-link">推荐</a>
-          <a href="/movies" class="nav-link">分类</a>
+          <router-link to="/" class="font-medium" :class="route.path === '/' ? 'text-[#09090B]' : 'text-[#A1A1AA] hover:text-[#52525B] transition-colors duration-150'">首页</router-link>
+          <router-link to="/movies" class="font-medium" :class="route.path.startsWith('/movies') ? 'text-[#09090B]' : 'text-[#A1A1AA] hover:text-[#52525B] transition-colors duration-150'">发现</router-link>
+          <router-link to="/recommendations" class="font-medium" :class="route.path.startsWith('/recommendations') ? 'text-[#09090B]' : 'text-[#A1A1AA] hover:text-[#52525B] transition-colors duration-150'">推荐</router-link>
         </div>
       </div>
       <div class="flex items-center gap-4">

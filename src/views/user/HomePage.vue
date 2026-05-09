@@ -12,9 +12,6 @@ const hotMovies = ref<MovieCardData[]>([])
 const loading = ref(true)
 const searchKeyword = ref('')
 
-const genres = ['全部', '动作', '喜剧', '科幻', '悬疑', '爱情', '动画', '纪录片', '恐怖']
-const activeGenre = ref('全部')
-
 onMounted(async () => {
   try {
     hotMovies.value = await movieStore.fetchHotMovies()
@@ -34,14 +31,6 @@ function goToSearch() {
   }
 }
 
-function selectGenre(genre: string) {
-  activeGenre.value = genre
-  if (genre === '全部') {
-    router.push({ name: 'MovieList' })
-  } else {
-    router.push({ name: 'MovieList', query: { genre: genre } })
-  }
-}
 </script>
 
 <template>
@@ -68,46 +57,9 @@ function selectGenre(genre: string) {
               查看推荐
             </button>
           </div>
-
-          <div class="flex gap-10 mt-12" v-if="!loading && hotMovies.length > 0">
-            <div>
-              <div class="flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-[#18181B]" viewBox="0 0 24 24" fill="currentColor">
-                  <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
-                </svg>
-                <span class="font-heading font-bold text-2xl">{{ hotMovies[0]?.avgRating.toFixed(1) }}</span>
-              </div>
-              <p class="text-xs text-[#A1A1AA] mt-1">最高评分</p>
-            </div>
-            <div>
-              <div class="flex items-center gap-1.5">
-                <span class="font-heading font-bold text-2xl">{{ hotMovies.length }}</span>
-              </div>
-              <p class="text-xs text-[#A1A1AA] mt-1">热门影片</p>
-            </div>
-          </div>
         </div>
       </div>
     </section>
-
-    <!-- Genre Pills -->
-    <div class="border-b border-[#E4E4E7]">
-      <div class="max-w-7xl mx-auto px-6 py-4">
-        <div class="flex gap-2 overflow-x-auto scrollbar-hide">
-          <button
-            v-for="genre in genres"
-            :key="genre"
-            class="px-4 py-1.5 text-sm whitespace-nowrap cursor-pointer rounded-sm border transition-all duration-200 font-medium"
-            :class="activeGenre === genre
-              ? 'bg-[#18181B] text-white border-[#18181B]'
-              : 'bg-white text-[#52525B] border-[#E4E4E7] hover:border-[#18181B] hover:text-[#18181B]'"
-            @click="selectGenre(genre)"
-          >
-            {{ genre }}
-          </button>
-        </div>
-      </div>
-    </div>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-6 py-16 space-y-20">
@@ -127,7 +79,7 @@ function selectGenre(genre: string) {
 
         <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
           <MovieCard
-            v-for="(movie, idx) in hotMovies"
+            v-for="(movie, idx) in hotMovies.slice(0, 6)"
             :key="movie.movieId"
             v-bind="movie"
             :rank-no="idx + 1"
