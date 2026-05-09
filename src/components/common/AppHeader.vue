@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter, useRoute } from 'vue-router'
 import { useToast } from '@/composables/useToast'
@@ -8,8 +9,17 @@ const router = useRouter()
 const route = useRoute()
 const toast = useToast()
 
+const searchText = ref('')
+
 function goTo(path: string) {
   router.push(path)
+}
+
+function doSearch() {
+  const val = searchText.value.trim()
+  if (val) {
+    router.push({ name: 'MovieList', query: { keyword: val } })
+  }
 }
 
 function goToRecommend() {
@@ -41,15 +51,13 @@ function goToRecommend() {
       <div class="flex items-center gap-4">
         <div class="hidden sm:block relative">
           <input
+            v-model="searchText"
             type="text"
             placeholder="搜索电影..."
-            class="search-input w-56 px-3.5 py-2 text-sm placeholder-[#A1A1AA]"
-            @keyup.enter="(e: KeyboardEvent) => {
-              const val = (e.target as HTMLInputElement).value.trim()
-              if (val) router.push({ name: 'MovieList', query: { keyword: val } })
-            }"
+            class="search-input w-56 px-3.5 py-2 pr-9 text-sm placeholder-[#A1A1AA]"
+            @keyup.enter="doSearch"
           />
-          <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A1A1AA]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A1A1AA] hover:text-[#18181B] cursor-pointer transition-colors duration-150" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" @click="doSearch">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
           </svg>
         </div>
