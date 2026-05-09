@@ -4,8 +4,8 @@ export function formatDate(date: string | Date, template = 'YYYY-MM-DD'): string
   return dayjs(date).format(template)
 }
 
-export function formatRating(score: number): string {
-  return score.toFixed(1)
+export function formatRating(score?: number): string {
+  return (score ?? 0).toFixed(1)
 }
 
 export function formatDateTime(date: string | Date): string {

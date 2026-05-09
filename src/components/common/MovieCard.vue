@@ -2,16 +2,21 @@
 import PosterImage from './PosterImage.vue'
 import { formatRating } from '@/utils/format'
 
-defineProps<{
+withDefaults(defineProps<{
   movieId: number
   title: string
-  posterUrl: string | null
-  avgRating: number
-  ratingCount: number
-  genres: string[]
+  posterUrl?: string | null
+  avgRating?: number
+  ratingCount?: number
+  genres?: string[]
   rankNo?: number
   recommendReason?: string | null
-}>()
+}>(), {
+  posterUrl: null,
+  avgRating: 0,
+  ratingCount: 0,
+  genres: () => [],
+})
 
 const emit = defineEmits<{
   click: [movieId: number]
