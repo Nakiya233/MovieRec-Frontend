@@ -21,10 +21,10 @@ const sortBy = ref<'hot' | 'rating' | 'time'>((route.query.sortBy as any) || 'ho
 const page = ref(Number(route.query.page) || 1)
 const pageSize = 12
 
-const genres = ['全部', '动作', '喜剧', '科幻', '悬疑', '爱情', '动画', '纪录片', '恐怖']
+const genres = ['全部', '动作', '喜剧', '科幻', '悬疑', '爱情', '动画', '纪录', '恐怖', '剧情', '惊悚', '犯罪', '奇幻', '冒险', '家庭', '战争', '历史', '音乐', '西部']
 
 const genreIdMap: Record<string, number | undefined> = {
-  '全部': undefined, '动作': 1, '喜剧': 2, '科幻': 3, '悬疑': 4, '爱情': 5, '动画': 6, '纪录片': 7, '恐怖': 8
+  '全部': undefined, '动作': 28, '喜剧': 35, '科幻': 878, '悬疑': 9648, '爱情': 10749, '动画': 16, '纪录': 99, '恐怖': 27, '剧情': 18, '惊悚': 53, '犯罪': 80, '奇幻': 14, '冒险': 12, '家庭': 10751, '战争': 10752, '历史': 36, '音乐': 10402, '西部': 37
 }
 
 const sortOptions = [
@@ -61,7 +61,10 @@ function updateQuery() {
   router.replace({ query })
 }
 
-watch(keyword, () => { page.value = 1; updateQuery(); debouncedLoad() })
+watch(() => route.query.keyword, (val) => {
+  keyword.value = (val as string) || ''
+  page.value = 1; updateQuery(); debouncedLoad()
+})
 watch(activeGenre, () => { page.value = 1; updateQuery(); debouncedLoad() })
 watch(sortBy, () => { page.value = 1; updateQuery(); debouncedLoad() })
 watch(page, () => { updateQuery(); loadMovies() })
