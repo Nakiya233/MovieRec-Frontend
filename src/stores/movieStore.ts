@@ -38,8 +38,14 @@ export const useMovieStore = defineStore('movie', () => {
       return cached.data
     }
     const res = await movieApi.getDetail(movieId)
-    detailCache.value.set(movieId, { data: res.data.data, timestamp: Date.now() })
-    return res.data.data
+    const raw: any = res.data.data
+    const data: MovieDetail = {
+      ...raw,
+      movieId: raw.id ?? raw.movieId,
+      latestComments: raw.latestComments ?? [],
+    }
+    detailCache.value.set(movieId, { data, timestamp: Date.now() })
+    return data
   }
 
   async function fetchHotMovies(): Promise<MovieCardData[]> {
