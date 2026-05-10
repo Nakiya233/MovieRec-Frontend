@@ -14,28 +14,28 @@ const props = defineProps<{
 }>()
 
 const prOption = computed(() => {
-  const kValues = [...new Set(props.metrics.map(m => m.kValue))].sort((a, b) => a - b)
+  const kvalues = [...new Set(props.metrics.map(m => m.kvalue))].sort((a, b) => a - b)
   const algorithms = [...new Set(props.metrics.map(m => m.algorithm))]
 
   return {
     tooltip: { trigger: 'axis' as const },
     legend: { data: algorithms.flatMap(a => [`${a} Precision`, `${a} Recall`]) },
-    xAxis: { type: 'category' as const, data: kValues.map(k => `K=${k}`) },
+    xAxis: { type: 'category' as const, data: kvalues.map(k => `K=${k}`) },
     yAxis: { type: 'value' as const, name: '值' },
     series: algorithms.flatMap(algo => [
       {
         name: `${algo} Precision`,
         type: 'bar' as const,
-        data: kValues.map(k => {
-          const m = props.metrics.find(x => x.kValue === k && x.algorithm === algo)
+        data: kvalues.map(k => {
+          const m = props.metrics.find(x => x.kvalue === k && x.algorithm === algo)
           return m?.precisionK ?? 0
         })
       },
       {
         name: `${algo} Recall`,
         type: 'bar' as const,
-        data: kValues.map(k => {
-          const m = props.metrics.find(x => x.kValue === k && x.algorithm === algo)
+        data: kvalues.map(k => {
+          const m = props.metrics.find(x => x.kvalue === k && x.algorithm === algo)
           return m?.recallK ?? 0
         })
       }
@@ -46,8 +46,8 @@ const prOption = computed(() => {
 const coverageOption = computed(() => {
   const algorithms = [...new Set(props.metrics.map(m => m.algorithm))]
   // Use first K value's metrics
-  const k0 = props.metrics[0]?.kValue
-  const subset = props.metrics.filter(m => m.kValue === k0)
+  const k0 = props.metrics[0]?.kvalue
+  const subset = props.metrics.filter(m => m.kvalue === k0)
 
   return {
     tooltip: { trigger: 'axis' as const },

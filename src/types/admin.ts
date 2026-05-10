@@ -64,7 +64,7 @@ export interface AdminRatingItem {
 
 export interface MetricsItem {
   algorithm: string
-  kValue: number
+  kvalue: number
   precisionK: number
   recallK: number
   coverage: number
@@ -73,8 +73,15 @@ export interface MetricsItem {
 
 export interface RecommendJob {
   id: number
+  dataset: string
+  version: string
   runTime: string
   status: string
+}
+
+export interface RecommendJobListRes {
+  records: RecommendJob[]
+  total: number
 }
 
 export interface UserListRes {

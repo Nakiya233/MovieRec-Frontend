@@ -20,9 +20,9 @@ async function fetchStat(apiCall: () => Promise<any>, target: Ref<number>) {
 
 async function fetchLatestJob() {
   try {
-    const jobsRes = await adminApi.getRecommendJobs()
-    const jobs = jobsRes.data.data
-    if (Array.isArray(jobs) && jobs.length > 0) {
+    const jobsRes = await adminApi.getRecommendJobs({ page: 1, size: 1 })
+    const jobs = jobsRes.data.data.records
+    if (jobs.length > 0) {
       latestJob.value = jobs[0]
     }
   } catch (e) {
