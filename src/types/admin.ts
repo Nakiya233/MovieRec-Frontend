@@ -60,18 +60,11 @@ export interface AdminRatingItem {
 
 export interface MetricsItem {
   algorithm: string
-  k: number
-  precision: number
-  recall: number
+  kValue: number
+  precisionK: number
+  recallK: number
   coverage: number
   novelty: number
-}
-
-export interface MetricsRes {
-  jobId: number
-  runTime: string
-  status: string
-  metrics: MetricsItem[]
 }
 
 export interface RecommendJob {

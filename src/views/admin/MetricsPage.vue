@@ -26,7 +26,7 @@ async function loadMetrics() {
   loading.value = true
   try {
     const res = await adminApi.getMetrics(selectedJobId.value)
-    metrics.value = res.data.data.metrics
+    metrics.value = res.data.data
   } finally {
     loading.value = false
   }
@@ -61,12 +61,12 @@ async function loadMetrics() {
         </div>
         <el-table :data="metrics" stripe style="width:100%">
           <el-table-column prop="algorithm" label="算法" width="120" />
-          <el-table-column prop="k" label="K" width="60" />
+          <el-table-column prop="kValue" label="K" width="60" />
           <el-table-column label="Precision" width="100">
-            <template #default="{ row }">{{ row.precision.toFixed(4) }}</template>
+            <template #default="{ row }">{{ row.precisionK.toFixed(4) }}</template>
           </el-table-column>
           <el-table-column label="Recall" width="100">
-            <template #default="{ row }">{{ row.recall.toFixed(4) }}</template>
+            <template #default="{ row }">{{ row.recallK.toFixed(4) }}</template>
           </el-table-column>
           <el-table-column label="Coverage" width="100">
             <template #default="{ row }">{{ row.coverage.toFixed(4) }}</template>

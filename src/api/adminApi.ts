@@ -1,6 +1,6 @@
 import http from './request'
 import type { ApiResponse } from '@/types/api'
-import type { AdminUserQuery, AdminMovieQuery, AdminCommentQuery, AdminRatingQuery, UserListRes, AdminMovieItem, MovieListAdminRes, AdminCommentItem, CommentListRes, AdminRatingItem, RatingListRes, MetricsRes, RecommendJob } from '@/types/admin'
+import type { AdminUserQuery, AdminMovieQuery, AdminCommentQuery, AdminRatingQuery, UserListRes, AdminMovieItem, MovieListAdminRes, AdminCommentItem, CommentListRes, AdminRatingItem, RatingListRes, MetricsItem, RecommendJob } from '@/types/admin'
 import type { MovieFormData } from '@/types/movie'
 import type { RecommendRes } from '@/types/recommend'
 
@@ -30,7 +30,7 @@ export const adminApi = {
     return http.get<ApiResponse<RecommendRes>>(`/admin/recommendations/${userId}`, { params })
   },
   getMetrics(jobId?: number) {
-    return http.get<ApiResponse<MetricsRes>>('/admin/metrics', { params: jobId ? { jobId } : {} })
+    return http.get<ApiResponse<MetricsItem[]>>('/admin/metrics', { params: jobId ? { jobId } : {} })
   },
   getRecommendJobs() {
     return http.get<ApiResponse<RecommendJob[]>>('/admin/recommend-jobs')

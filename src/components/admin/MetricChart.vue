@@ -14,7 +14,7 @@ const props = defineProps<{
 }>()
 
 const prOption = computed(() => {
-  const kValues = [...new Set(props.metrics.map(m => m.k))].sort((a, b) => a - b)
+  const kValues = [...new Set(props.metrics.map(m => m.kValue))].sort((a, b) => a - b)
   const algorithms = [...new Set(props.metrics.map(m => m.algorithm))]
 
   return {
@@ -27,16 +27,16 @@ const prOption = computed(() => {
         name: `${algo} Precision`,
         type: 'bar' as const,
         data: kValues.map(k => {
-          const m = props.metrics.find(x => x.k === k && x.algorithm === algo)
-          return m?.precision ?? 0
+          const m = props.metrics.find(x => x.kValue === k && x.algorithm === algo)
+          return m?.precisionK ?? 0
         })
       },
       {
         name: `${algo} Recall`,
         type: 'bar' as const,
         data: kValues.map(k => {
-          const m = props.metrics.find(x => x.k === k && x.algorithm === algo)
-          return m?.recall ?? 0
+          const m = props.metrics.find(x => x.kValue === k && x.algorithm === algo)
+          return m?.recallK ?? 0
         })
       }
     ])
@@ -46,8 +46,8 @@ const prOption = computed(() => {
 const coverageOption = computed(() => {
   const algorithms = [...new Set(props.metrics.map(m => m.algorithm))]
   // Use first K value's metrics
-  const k0 = props.metrics[0]?.k
-  const subset = props.metrics.filter(m => m.k === k0)
+  const k0 = props.metrics[0]?.kValue
+  const subset = props.metrics.filter(m => m.kValue === k0)
 
   return {
     tooltip: { trigger: 'axis' as const },

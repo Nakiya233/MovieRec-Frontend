@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, type Ref } from 'vue'
 import { adminApi } from '@/api/adminApi'
 import type { RecommendJob } from '@/types/admin'
 
@@ -9,24 +9,33 @@ const totalRatings = ref(0)
 const totalComments = ref(0)
 const latestJob = ref<RecommendJob | null>(null)
 
-onMounted(async () => {
+async function fetchStat(apiCall: () => Promise<any>, target: Ref<number>) {
   try {
-    const [movieRes, userRes, ratingRes, commentRes, jobsRes] = await Promise.all([
-      adminApi.getMovies({ page: 1, size: 1 }),
-      adminApi.getUsers({ page: 1, size: 1 }),
-      adminApi.getRatings({ page: 1, size: 1 }),
-      adminApi.getComments({ page: 1, size: 1 }),
-      adminApi.getRecommendJobs()
-    ])
-    totalMovies.value = movieRes.data.data.total
-    totalUsers.value = userRes.data.data.total
-    totalRatings.value = ratingRes.data.data.total
-    totalComments.value = commentRes.data.data.total
-    const jobs = jobsRes.data.data
-    if (jobs.length > 0) latestJob.value = jobs[0]
-  } catch {
-    // ignore
+    const res = await apiCall()
+    target.value = res.data.data.total ?? 0
+  } catch (e) {
+    console.error('Dashboard stat fetch failed:', e)
   }
+}
+
+async function fetchLatestJob() {
+  try {
+    const jobsRes = await adminApi.getRecommendJobs()
+    const jobs = jobsRes.data.data
+    if (Array.isArray(jobs) && jobs.length > 0) {
+      latestJob.value = jobs[0]
+    }
+  } catch (e) {
+    console.error('Dashboard latest job fetch failed:', e)
+  }
+}
+
+onMounted(() => {
+  fetchStat(() => adminApi.getMovies({ page: 1, size: 1 }), totalMovies)
+  fetchStat(() => adminApi.getUsers({ page: 1, size: 1 }), totalUsers)
+  fetchStat(() => adminApi.getRatings({ page: 1, size: 1 }), totalRatings)
+  fetchStat(() => adminApi.getComments({ page: 1, size: 1 }), totalComments)
+  fetchLatestJob()
 })
 
 function statusType(status: string) {
