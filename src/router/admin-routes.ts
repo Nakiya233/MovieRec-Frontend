@@ -2,6 +2,12 @@ import type { RouteRecordRaw } from 'vue-router'
 
 const adminRoutes: RouteRecordRaw[] = [
   {
+    path: '/admin/login',
+    name: 'AdminLogin',
+    component: () => import('@/views/admin/AdminLoginPage.vue'),
+    meta: { title: '管理登录', guestOnly: true }
+  },
+  {
     path: '/admin',
     component: () => import('@/views/admin/AdminLayout.vue'),
     redirect: '/admin/dashboard',

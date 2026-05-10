@@ -10,7 +10,7 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<UserInfo | null>(null)
 
   const isLoggedIn = computed(() => token.value !== null && user.value !== null)
-  const isAdmin = computed(() => (user.value?.role ?? 0) === 4)
+  const isAdmin = computed(() => [4, 255].includes(user.value?.role ?? 0))
   const userId = computed(() => user.value?.id ?? null)
 
   function initFromStorage() {
@@ -36,12 +36,12 @@ export const useAuthStore = defineStore('auth', () => {
     await login(username, password)
   }
 
-  function logout() {
+  function logout(redirectTo: string = 'Home') {
     token.value = null
     user.value = null
     removeToken()
     removeUser()
-    router.push({ name: 'Home' })
+    router.push({ name: redirectTo })
   }
 
   return { token, user, isLoggedIn, isAdmin, userId, initFromStorage, login, register, logout }

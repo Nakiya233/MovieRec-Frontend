@@ -11,6 +11,10 @@ const router = createRouter({
 router.beforeEach((to, _from) => {
   const auth = useAuthStore()
 
+  if (to.name === 'AdminLogin' && auth.isAdmin) {
+    return { name: 'Dashboard' }
+  }
+
   if (to.meta.guestOnly && auth.isLoggedIn) {
     return { name: 'Home' }
   }

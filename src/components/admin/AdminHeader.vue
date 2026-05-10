@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
 
 const route = useRoute()
+const router = useRouter()
+const auth = useAuthStore()
 
 const routeTitleMap: Record<string, string> = {
   '/admin/dashboard': '仪表盘',
@@ -38,6 +41,12 @@ const pageTitle = computed(() => {
         </svg>
         <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-[#18181B] rounded-full"></span>
       </div>
+      <button
+        class="ml-2 px-3 py-1.5 text-xs font-medium text-[#52525B] hover:text-[#DC2626] hover:bg-[#FEF2F2] rounded transition-colors"
+        @click="auth.logout('AdminLogin')"
+      >
+        退出登录
+      </button>
     </div>
   </div>
 </template>
