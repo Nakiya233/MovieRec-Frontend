@@ -68,11 +68,14 @@ function goToRecommend() {
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
             </svg>
           </div>
-          <div
-            class="w-8 h-8 rounded-full bg-[#18181B] flex items-center justify-center text-xs font-semibold text-white cursor-pointer"
-            @click="goTo('/profile')"
-          >
-            {{ auth.user?.username?.charAt(0).toUpperCase() || 'U' }}
+          <div class="relative group">
+            <div class="w-8 h-8 rounded-full bg-[#18181B] flex items-center justify-center text-xs font-semibold text-white cursor-pointer">
+              {{ auth.user?.username?.charAt(0).toUpperCase() || 'U' }}
+            </div>
+            <div class="absolute right-0 top-full mt-2 w-36 bg-white border border-[#E4E4E7] rounded-sm shadow-sm opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+              <a class="block px-4 py-2.5 text-sm text-[#52525B] hover:bg-[#F4F4F5] hover:text-[#09090B] transition-colors duration-150 cursor-pointer" @click="goTo('/profile')">个人中心</a>
+              <a class="block px-4 py-2.5 text-sm text-[#52525B] hover:bg-[#F4F4F5] hover:text-[#09090B] transition-colors duration-150 cursor-pointer" @click="auth.logout()">退出登录</a>
+            </div>
           </div>
         </template>
         <template v-else>

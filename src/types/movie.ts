@@ -45,6 +45,13 @@ export interface MovieListRes {
   size: number
 }
 
+export interface CommentListRes {
+  records: CommentItem[]
+  total: number
+  page: number
+  size: number
+}
+
 export interface MovieFormData {
   title: string
   overview?: string

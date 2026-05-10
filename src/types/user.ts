@@ -2,7 +2,8 @@ export interface UserInfo {
   id: number
   username: string
   role: number
-  createdAt?: string
+  email?: string
+  createdTime?: string
 }
 
 export interface LoginReq {

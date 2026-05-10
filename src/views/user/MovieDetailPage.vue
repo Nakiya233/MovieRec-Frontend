@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMovieStore } from '@/stores/movieStore'
 import { useAuthStore } from '@/stores/authStore'
@@ -7,6 +7,7 @@ import { ratingApi } from '@/api/ratingApi'
 import { commentApi } from '@/api/commentApi'
 import PosterImage from '@/components/common/PosterImage.vue'
 import StarRating from '@/components/common/StarRating.vue'
+import Pagination from '@/components/common/Pagination.vue'
 import { formatRating, formatDateTime } from '@/utils/format'
 import type { MovieDetail, CommentItem } from '@/types/movie'
 
@@ -20,16 +21,61 @@ const notFound = ref(false)
 const error = ref('')
 
 const myRating = ref(0)
+const myRatingId = ref<number | null>(null)
 const ratingSubmitting = ref(false)
 
 const commentContent = ref('')
+const myCommentId = ref<number | null>(null)
 const commentSubmitting = ref(false)
 const commentSuccess = ref(false)
 
-onMounted(async () => {
+const comments = ref<CommentItem[]>([])
+const commentPage = ref(1)
+const commentTotal = ref(0)
+const commentPageSize = 10
+
+function resetState() {
+  movie.value = null
+  comments.value = []
+  myRating.value = 0
+  myRatingId.value = null
+  commentContent.value = ''
+  myCommentId.value = null
+  commentSuccess.value = false
+  notFound.value = false
+  error.value = ''
+  loading.value = true
+}
+
+async function loadComments(page: number) {
+  const id = Number(route.params.id)
+  const res = await movieStore.fetchMovieComments(id, page, commentPageSize)
+  comments.value = res.records
+  commentTotal.value = res.total
+  commentPage.value = page
+}
+
+async function init() {
+  resetState()
   try {
     const id = Number(route.params.id)
-    movie.value = await movieStore.fetchMovieDetail(id)
+    const tasks: Promise<any>[] = [
+      movieStore.fetchMovieDetail(id).then(d => { movie.value = d }),
+      loadComments(1),
+    ]
+    if (auth.isLoggedIn) {
+      tasks.push(
+        ratingApi.getMyRatings({ page: 1, size: 1, movieId: id }).then(res => {
+          const r = res.data.data.records[0]
+          if (r) { myRating.value = r.score; myRatingId.value = r.id }
+        }),
+        commentApi.getMyComments({ page: 1, size: 1, movieId: id }).then(res => {
+          const c = res.data.data.records[0]
+          if (c) { commentContent.value = c.content; myCommentId.value = c.id }
+        }),
+      )
+    }
+    await Promise.all(tasks)
   } catch (e: any) {
     if (e?.response?.status === 404) {
       notFound.value = true
@@ -39,6 +85,12 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+}
+
+onMounted(() => init())
+
+watch(() => route.params.id, () => {
+  if (route.params.id) init()
 })
 
 async function submitRating() {
@@ -47,6 +99,7 @@ async function submitRating() {
   try {
     const res = await ratingApi.submit({ movieId: movie.value.movieId, score: myRating.value })
     movie.value.avgRating = res.data.data.avgRating
+    myRatingId.value = res.data.data.id
   } catch (e: any) {
     // ignore
   } finally {
@@ -59,11 +112,23 @@ async function submitComment() {
   commentSubmitting.value = true
   try {
     await commentApi.submit({ movieId: movie.value.movieId, content: commentContent.value.trim() })
-    commentContent.value = ''
     commentSuccess.value = true
-    // Reload detail to get updated comments
     const id = Number(route.params.id)
-    movie.value = await movieStore.fetchMovieDetail(id)
+    // Reload detail, comments, and user's latest comment
+    const [detail, commentListRes, commentRes] = await Promise.all([
+      movieStore.fetchMovieDetail(id),
+      movieStore.fetchMovieComments(id, 1, commentPageSize),
+      commentApi.getMyComments({ page: 1, size: 1, movieId: id }),
+    ])
+    movie.value = detail
+    comments.value = commentListRes.records
+    commentTotal.value = commentListRes.total
+    commentPage.value = 1
+    const latest = commentRes.data.data.records[0]
+    if (latest) {
+      commentContent.value = latest.content
+      myCommentId.value = latest.id
+    }
   } catch (e: any) {
     // ignore
   } finally {
@@ -124,7 +189,7 @@ async function submitComment() {
                   :disabled="ratingSubmitting"
                   @click="submitRating"
                 >
-                  提交评分
+                  {{ myRatingId ? '修改评分' : '提交评分' }}
                 </button>
               </div>
             </template>
@@ -150,7 +215,7 @@ async function submitComment() {
             :disabled="!commentContent.trim() || commentSubmitting"
             @click="submitComment"
           >
-            {{ commentSubmitting ? '提交中...' : '发表评论' }}
+            {{ commentSubmitting ? '提交中...' : (myCommentId ? '修改评论' : '发表评论') }}
           </button>
           <p v-if="commentSuccess" class="text-xs text-[#16A34A] mt-2">评论发表成功</p>
         </template>
@@ -162,12 +227,12 @@ async function submitComment() {
       <!-- Latest Comments -->
       <div>
         <h3 class="text-sm font-semibold mb-4">最新评论</h3>
-        <div v-if="movie.latestComments.length === 0" class="text-sm text-[#A1A1AA] py-8 text-center">
+        <div v-if="comments.length === 0" class="text-sm text-[#A1A1AA] py-8 text-center">
           暂无评论，来写第一条吧
         </div>
-        <div v-else class="space-y-4">
+        <div v-else class="space-y-4 mb-4">
           <div
-            v-for="comment in movie.latestComments.filter(c => c.status === 0)"
+            v-for="comment in comments.filter(c => c.status === 0)"
             :key="comment.id"
             class="p-4 border border-[#E4E4E7] rounded-sm"
           >
@@ -178,6 +243,7 @@ async function submitComment() {
             <p class="text-sm text-[#52525B] leading-relaxed">{{ comment.content }}</p>
           </div>
         </div>
+        <Pagination v-if="commentTotal > commentPageSize" :current="commentPage" :total="commentTotal" :page-size="commentPageSize" @change="loadComments" />
       </div>
     </template>
   </div>

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { movieApi } from '@/api/movieApi'
-import type { MovieCardData, MovieDetail, MovieQueryParams, MovieListRes } from '@/types/movie'
+import type { MovieCardData, MovieDetail, MovieQueryParams, MovieListRes, CommentListRes } from '@/types/movie'
 
 interface CacheEntry<T> {
   data: T
@@ -42,7 +42,6 @@ export const useMovieStore = defineStore('movie', () => {
     const data: MovieDetail = {
       ...raw,
       movieId: raw.id ?? raw.movieId,
-      latestComments: raw.latestComments ?? [],
     }
     detailCache.value.set(movieId, { data, timestamp: Date.now() })
     return data
@@ -54,5 +53,10 @@ export const useMovieStore = defineStore('movie', () => {
     return hotMovies.value
   }
 
-  return { listCache, detailCache, hotMovies, fetchMovies, fetchMovieDetail, fetchHotMovies }
+  async function fetchMovieComments(movieId: number, page: number, size: number): Promise<CommentListRes> {
+    const res = await movieApi.getComments(movieId, { page, size })
+    return res.data.data
+  }
+
+  return { listCache, detailCache, hotMovies, fetchMovies, fetchMovieDetail, fetchHotMovies, fetchMovieComments }
 })
