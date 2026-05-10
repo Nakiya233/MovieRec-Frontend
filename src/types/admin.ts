@@ -15,8 +15,7 @@ export interface AdminCommentQuery extends PageParams {
 }
 
 export interface AdminRatingQuery extends PageParams {
-  userId?: number
-  movieId?: number
+  keyword?: string
 }
 
 export interface UserManageItem {
@@ -55,7 +54,7 @@ export interface AdminCommentItem {
 
 export interface AdminRatingItem {
   id: number
-  userId: number
+  username: string
   movieId: number
   movieTitle: string
   score: number
