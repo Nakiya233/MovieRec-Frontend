@@ -64,7 +64,7 @@ async function handleRegister() {
 
   regLoading.value = true
   try {
-    await auth.register(regUsername.value, regPassword.value, regConfirmPassword.value)
+    await auth.register(regUsername.value, regPassword.value, regConfirmPassword.value, regEmail.value)
     const redirect = route.query.redirect as string
     router.push(redirect || '/')
   } catch (e: any) {

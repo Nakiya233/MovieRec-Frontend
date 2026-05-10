@@ -5,6 +5,7 @@ import { useMovieStore } from '@/stores/movieStore'
 import { useAuthStore } from '@/stores/authStore'
 import { ratingApi } from '@/api/ratingApi'
 import { commentApi } from '@/api/commentApi'
+import { useToast } from '@/composables/useToast'
 import PosterImage from '@/components/common/PosterImage.vue'
 import StarRating from '@/components/common/StarRating.vue'
 import Pagination from '@/components/common/Pagination.vue'
@@ -14,6 +15,7 @@ import type { MovieDetail, CommentItem } from '@/types/movie'
 const route = useRoute()
 const movieStore = useMovieStore()
 const auth = useAuthStore()
+const toast = useToast()
 
 const movie = ref<MovieDetail | null>(null)
 const loading = ref(true)
@@ -97,11 +99,21 @@ async function submitRating() {
   if (!movie.value || ratingSubmitting.value) return
   ratingSubmitting.value = true
   try {
-    const res = await ratingApi.submit({ movieId: movie.value.movieId, score: myRating.value })
-    movie.value.avgRating = res.data.data.avgRating
-    myRatingId.value = res.data.data.id
+    await ratingApi.submit({ movieId: movie.value.movieId, score: myRating.value })
+    toast.show(myRatingId.value ? '评分修改成功' : '评分提交成功')
+    const id = Number(route.params.id)
+    const [detail, ratingRes] = await Promise.all([
+      movieStore.fetchMovieDetail(id),
+      ratingApi.getMyRatings({ page: 1, size: 1, movieId: id }),
+    ])
+    movie.value = detail
+    const record = ratingRes.data.data.records[0]
+    if (record) {
+      myRating.value = record.score
+      myRatingId.value = record.id
+    }
   } catch (e: any) {
-    // ignore
+    toast.show(e?.response?.data?.message || e?.message || '评分提交失败')
   } finally {
     ratingSubmitting.value = false
   }
@@ -113,6 +125,7 @@ async function submitComment() {
   try {
     await commentApi.submit({ movieId: movie.value.movieId, content: commentContent.value.trim() })
     commentSuccess.value = true
+    toast.show(myCommentId.value ? '评论修改成功' : '评论发表成功')
     const id = Number(route.params.id)
     // Reload detail, comments, and user's latest comment
     const [detail, commentListRes, commentRes] = await Promise.all([
@@ -130,7 +143,7 @@ async function submitComment() {
       myCommentId.value = latest.id
     }
   } catch (e: any) {
-    // ignore
+    toast.show(e?.response?.data?.message || e?.message || '评论提交失败')
   } finally {
     commentSubmitting.value = false
   }

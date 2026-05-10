@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter, useRoute } from 'vue-router'
 import { useToast } from '@/composables/useToast'
@@ -10,6 +10,10 @@ const route = useRoute()
 const toast = useToast()
 
 const searchText = ref('')
+
+watch(() => auth.isLoggedIn, (loggedIn) => {
+  if (!loggedIn) searchText.value = ''
+})
 
 function goTo(path: string) {
   router.push(path)
