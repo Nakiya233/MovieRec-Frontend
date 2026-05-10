@@ -60,7 +60,6 @@ function onSearch() {
         <el-table-column label="ItemCF" width="90">
           <template #default="{ row }">{{ formatRating(row.scoreItemCF) }}</template>
         </el-table-column>
-        <el-table-column prop="jobId" label="批次ID" width="80" />
       </el-table>
 
       <div class="flex justify-end p-4">

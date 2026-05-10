@@ -45,13 +45,19 @@ const menuItems = [
       <div class="pt-4 mt-4 border-t border-[#E4E4E7]">
         <router-link
           to="/admin/recommendations/1"
-          class="flex items-center gap-3 px-3 py-2.5 text-sm text-[#52525B] hover:bg-[#F4F4F5] hover:text-[#18181B] rounded-sm transition-all duration-150"
+          class="flex items-center gap-3 px-3 py-2.5 text-sm rounded-sm transition-all duration-150"
+          :class="activeMenu.startsWith('/admin/recommendations')
+            ? 'bg-[#18181B] text-white font-medium'
+            : 'text-[#52525B] hover:bg-[#F4F4F5] hover:text-[#18181B]'"
         >
           推荐结果
         </router-link>
         <router-link
           to="/admin/metrics"
-          class="flex items-center gap-3 px-3 py-2.5 text-sm text-[#52525B] hover:bg-[#F4F4F5] hover:text-[#18181B] rounded-sm transition-all duration-150"
+          class="flex items-center gap-3 px-3 py-2.5 text-sm rounded-sm transition-all duration-150"
+          :class="activeMenu === '/admin/metrics'
+            ? 'bg-[#18181B] text-white font-medium'
+            : 'text-[#52525B] hover:bg-[#F4F4F5] hover:text-[#18181B]'"
         >
           评估看板
         </router-link>

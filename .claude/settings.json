@@ -5,7 +5,10 @@
       "Bash(npm create *)",
       "Bash(npm install *)",
       "Bash(git commit *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(GIT_SEQUENCE_EDITOR=\"sed -i '1s/^pick /reword /'\" GIT_EDITOR=\"sed -i 's/^chore: 初始化 Vite + Vue3 + TS 项目脚手架/init: 初始化 Vite + Vue3 + TS 项目脚手架/'\" git rebase -i --root)",
+      "Bash(git stash *)",
+      "Bash(GIT_SEQUENCE_EDITOR=\"sed -i '1s/^pick /reword /'\" GIT_EDITOR=\"sed -i '1s/^chore: 初始化 Vite + Vue3 + TS 项目脚手架/init: 初始化 Vite + Vue3 + TS 项目脚手架/'\" git rebase -i --root)"
     ]
   },
   "enabledPlugins": {
