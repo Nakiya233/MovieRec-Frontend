@@ -48,8 +48,9 @@ export interface AdminCommentItem {
   movieId: number
   movieTitle: string
   content: string
-  status: number
-  createdAt: string
+  isDeleted: boolean
+  createdTime: string
+  updatedTime?: string
 }
 
 export interface AdminRatingItem {
@@ -58,7 +59,8 @@ export interface AdminRatingItem {
   movieId: number
   movieTitle: string
   score: number
-  createdAt: string
+  ratedTime: string
+  updatedTime?: string
 }
 
 export interface MetricsItem {

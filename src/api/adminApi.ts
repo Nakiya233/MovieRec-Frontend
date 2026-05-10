@@ -8,6 +8,9 @@ export const adminApi = {
   getUsers(params: AdminUserQuery) {
     return http.get<ApiResponse<UserListRes>>('/admin/users', { params })
   },
+  updateUser(id: number, data: { status: number }) {
+    return http.put<ApiResponse<void>>(`/admin/users/${id}`, data)
+  },
   getMovies(params: AdminMovieQuery) {
     return http.get<ApiResponse<MovieListAdminRes>>('/admin/movies', { params })
   },

@@ -245,13 +245,13 @@ async function submitComment() {
         </div>
         <div v-else class="space-y-4 mb-4">
           <div
-            v-for="comment in comments.filter(c => c.status === 0)"
+            v-for="comment in comments"
             :key="comment.id"
             class="p-4 border border-[#E4E4E7] rounded-sm"
           >
             <div class="flex items-center justify-between mb-1.5">
               <span class="text-sm font-medium">{{ comment.username }}</span>
-              <span class="text-xs text-[#A1A1AA]">{{ formatDateTime(comment.createdAt) }}</span>
+              <span class="text-xs text-[#A1A1AA]">{{ formatDateTime(comment.createdTime) }}</span>
             </div>
             <p class="text-sm text-[#52525B] leading-relaxed">{{ comment.content }}</p>
           </div>

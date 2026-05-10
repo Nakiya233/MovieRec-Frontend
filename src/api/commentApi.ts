@@ -12,7 +12,9 @@ export interface UserCommentRecord {
   movieId: number
   movieTitle: string
   content: string
+  isDeleted: boolean
   createdTime: string
+  updatedTime?: string
 }
 
 export const commentApi = {

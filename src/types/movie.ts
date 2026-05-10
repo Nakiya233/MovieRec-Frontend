@@ -26,8 +26,7 @@ export interface CommentItem {
   userId: number
   username: string
   content: string
-  status: number
-  createdAt: string
+  createdTime: string
 }
 
 export interface MovieQueryParams {

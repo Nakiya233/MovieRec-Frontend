@@ -19,6 +19,7 @@ export interface UserRatingRecord {
   movieTitle: string
   score: number
   ratedTime: string
+  updatedTime?: string
 }
 
 export const ratingApi = {

@@ -61,14 +61,29 @@ function onSearch() {
         <el-table-column prop="username" label="用户名" width="120" />
         <el-table-column prop="movieTitle" label="电影名" width="160" />
         <el-table-column prop="content" label="内容" show-overflow-tooltip />
+        <el-table-column label="状态" width="80">
+          <template #default="{ row }">
+            <el-tag :type="row.isDeleted ? 'danger' : 'success'" size="small">
+              {{ row.isDeleted ? '已删除' : '正常' }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="时间" width="180">
           <template #default="{ row }">
-            {{ formatDateTime(row.createdAt) }}
+            {{ formatDateTime(row.createdTime) }}
           </template>
         </el-table-column>
         <el-table-column label="操作" width="80">
           <template #default="{ row }">
-            <el-button type="danger" link size="small" @click="handleDelete(row.id)">删除</el-button>
+            <el-button
+              v-if="!row.isDeleted"
+              type="danger"
+              link
+              size="small"
+              @click="handleDelete(row.id)"
+            >
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>

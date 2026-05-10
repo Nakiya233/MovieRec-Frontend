@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { adminApi } from '@/api/adminApi'
 import { useAdminStore } from '@/stores/adminStore'
 import { formatDateTime } from '@/utils/format'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import type { UserManageItem } from '@/types/admin'
 
 const adminStore = useAdminStore()
@@ -25,6 +26,25 @@ async function loadUsers() {
 }
 
 onMounted(() => loadUsers())
+
+async function toggleUserStatus(user: UserManageItem) {
+  const newStatus = user.status === 1 ? 0 : 1
+  const action = newStatus === 0 ? '封禁' : '解封'
+  try {
+    await ElMessageBox.confirm(
+      `确定要${action}用户「${user.username}」吗？`,
+      `${action}确认`,
+      { confirmButtonText: action, cancelButtonText: '取消', type: 'warning' }
+    )
+    await adminApi.updateUser(user.id, { status: newStatus })
+    user.status = newStatus
+    ElMessage.success(`已${action}`)
+  } catch (e: any) {
+    if (e !== 'cancel') {
+      ElMessage.error(e?.message || '操作失败')
+    }
+  }
+}
 
 function onSearch() {
   page.value = 1
@@ -53,9 +73,21 @@ function onSearch() {
         <el-table-column prop="email" label="邮箱" />
         <el-table-column label="状态" width="100">
           <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'info'" size="small">
+            <el-tag :type="row.status === 1 ? 'success' : 'danger'" size="small">
               {{ row.status === 1 ? '正常' : '禁用' }}
             </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="100">
+          <template #default="{ row }">
+            <el-button
+              :type="row.status === 1 ? 'danger' : 'success'"
+              link
+              size="small"
+              @click="toggleUserStatus(row)"
+            >
+              {{ row.status === 1 ? '封禁' : '解封' }}
+            </el-button>
           </template>
         </el-table-column>
         <el-table-column label="注册时间" width="180">

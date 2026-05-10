@@ -56,7 +56,7 @@ function onSearch() {
         </el-table-column>
         <el-table-column label="评分时间" width="180">
           <template #default="{ row }">
-            {{ formatDateTime(row.createdAt) }}
+            {{ formatDateTime(row.ratedTime) }}
           </template>
         </el-table-column>
       </el-table>
