@@ -62,21 +62,32 @@ function handleSubmit() {
         <el-input v-model="form.releaseDate" placeholder="2026" />
       </el-form-item>
       <el-form-item label="TMDB ID">
-        <el-input-number v-model="form.tmdbId" :min="0" placeholder="TMDB ID" />
+        <el-input v-model.number="form.tmdbId" placeholder="TMDB ID" />
       </el-form-item>
       <el-form-item label="海报URL">
         <el-input v-model="form.posterUrl" placeholder="海报图片链接" />
       </el-form-item>
       <el-form-item label="类型">
         <el-select v-model="form.genres" multiple placeholder="选择类型">
+          <el-option label="冒险" value="冒险" />
+          <el-option label="剧情" value="剧情" />
           <el-option label="动作" value="动作" />
-          <el-option label="喜剧" value="喜剧" />
-          <el-option label="科幻" value="科幻" />
-          <el-option label="悬疑" value="悬疑" />
-          <el-option label="爱情" value="爱情" />
           <el-option label="动画" value="动画" />
-          <el-option label="纪录片" value="纪录片" />
+          <el-option label="历史" value="历史" />
+          <el-option label="喜剧" value="喜剧" />
+          <el-option label="奇幻" value="奇幻" />
+          <el-option label="家庭" value="家庭" />
           <el-option label="恐怖" value="恐怖" />
+          <el-option label="悬疑" value="悬疑" />
+          <el-option label="惊悚" value="惊悚" />
+          <el-option label="战争" value="战争" />
+          <el-option label="爱情" value="爱情" />
+          <el-option label="犯罪" value="犯罪" />
+          <el-option label="电视电影" value="电视电影" />
+          <el-option label="科幻" value="科幻" />
+          <el-option label="纪录" value="纪录" />
+          <el-option label="西部" value="西部" />
+          <el-option label="音乐" value="音乐" />
         </el-select>
       </el-form-item>
     </el-form>

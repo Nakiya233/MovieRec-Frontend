@@ -16,6 +16,7 @@ const keyword = ref('')
 
 const dialogVisible = ref(false)
 const editingMovie = ref<MovieFormData | null>(null)
+const editingId = ref<number | null>(null)
 
 async function loadMovies() {
   loading.value = true
@@ -31,31 +32,53 @@ async function loadMovies() {
 onMounted(() => loadMovies())
 
 function openCreate() {
+  editingId.value = null
   editingMovie.value = null
   dialogVisible.value = true
 }
 
 function openEdit(movie: AdminMovieItem) {
+  editingId.value = movie.id
   editingMovie.value = {
     title: movie.title,
+    overview: movie.overview || '',
     releaseDate: movie.releaseDate || '',
-    genres: movie.genres
+    tmdbId: movie.tmdbId ?? undefined,
+    posterUrl: movie.posterUrl || '',
+    genres: [...movie.genres]
   }
   dialogVisible.value = true
 }
 
 async function handleSubmit(data: MovieFormData) {
   try {
-    if (editingMovie.value) {
-      await adminApi.updateMovie((editingMovie.value as any).movieId, data)
+    if (editingId.value !== null) {
+      await adminApi.updateMovie(editingId.value, data)
     } else {
       await adminApi.createMovie(data)
     }
     dialogVisible.value = false
-    ElMessage.success(editingMovie.value ? '更新成功' : '创建成功')
+    ElMessage.success(editingId.value !== null ? '更新成功' : '创建成功')
     loadMovies()
   } catch (e: any) {
     ElMessage.error(e?.message || '操作失败')
+  }
+}
+
+async function handleDelete(movie: AdminMovieItem) {
+  try {
+    await ElMessageBox.confirm(
+      `确定要删除电影「${movie.title}」吗？删除后不可恢复。`,
+      '删除确认',
+      { confirmButtonText: '删除', cancelButtonText: '取消', type: 'warning' }
+    )
+    await adminApi.deleteMovie(movie.id)
+    ElMessage.success('已删除')
+    loadMovies()
+  } catch (e: any) {
+    if (e !== 'cancel') {
+      ElMessage.error(e?.message || '删除失败')
+    }
   }
 }
 
@@ -79,12 +102,23 @@ function onSearch() {
         />
         <el-button type="default" @click="onSearch">搜索</el-button>
       </div>
-      <el-button type="primary" @click="openCreate">添加电影</el-button>
+      <el-button class="btn-outline" @click="openCreate">添加电影</el-button>
     </div>
 
     <div class="stat-card rounded-sm overflow-hidden">
       <el-table :data="movies" v-loading="loading" stripe style="width:100%">
-        <el-table-column prop="movieId" label="ID" width="80" />
+        <el-table-column prop="id" label="ID" width="60" />
+        <el-table-column label="海报" width="80">
+          <template #default="{ row }">
+            <el-image
+              v-if="row.posterUrl"
+              :src="row.posterUrl"
+              fit="cover"
+              style="width:48px;height:64px;border-radius:4px"
+            />
+            <span v-else class="text-[#A1A1AA] text-xs">—</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="title" label="电影名称" />
         <el-table-column prop="releaseDate" label="年份" width="100" />
         <el-table-column label="评分" width="100">
@@ -93,9 +127,10 @@ function onSearch() {
           </template>
         </el-table-column>
         <el-table-column prop="ratingCount" label="评分人数" width="100" />
-        <el-table-column label="操作" width="120">
+        <el-table-column label="操作" width="140">
           <template #default="{ row }">
             <el-button type="primary" link size="small" @click="openEdit(row)">编辑</el-button>
+            <el-button type="danger" link size="small" @click="handleDelete(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

@@ -17,6 +17,9 @@ export const adminApi = {
   updateMovie(id: number, data: MovieFormData) {
     return http.put<ApiResponse<void>>(`/admin/movies/${id}`, data)
   },
+  deleteMovie(id: number) {
+    return http.delete<ApiResponse<void>>(`/admin/movies/${id}`)
+  },
   getComments(params: AdminCommentQuery) {
     return http.get<ApiResponse<CommentListRes>>('/admin/comments', { params })
   },

@@ -29,9 +29,12 @@ export interface UserManageItem {
 }
 
 export interface AdminMovieItem {
-  movieId: number
+  id: number
   title: string
+  overview: string | null
   releaseDate: string | null
+  tmdbId: number | null
+  posterUrl: string | null
   avgRating: number
   ratingCount: number
   genres: string[]
